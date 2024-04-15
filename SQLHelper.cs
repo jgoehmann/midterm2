@@ -13,8 +13,14 @@ namespace TestDBSolution
 {
     public static class SQLHelper
     {
-        //update function
-        public static void updateDB(string Account, int AccountNumber, int NewBalance, string AccountType)
+        /// <summary>
+        /// update function
+        /// </summary>
+        /// <param name="account">savings or checking account</param>
+        /// <param name="accountNumber">account number</param>
+        /// <param name="newBalance">new desired balance value</param>
+        /// <param name="accountType"> savings or checking accountNumber</param>
+        public static void UpdateDB(string account, int accountNumber, int newBalance, string accountType)
         {
             string connectionString;
             SqlConnection cnn;
@@ -24,7 +30,7 @@ namespace TestDBSolution
             SqlCommand command;
             SqlDataAdapter adapter = new SqlDataAdapter();
             string sql = String.Empty;
-            sql = "Update " + Account + " set Balance=" + NewBalance + " Where "+AccountType+" = " + AccountNumber + "";
+            sql = "Update " + account + " set Balance=" + newBalance + " Where "+accountType+" = " + accountNumber + "";
             command = new SqlCommand(sql, cnn);
             adapter.UpdateCommand = new SqlCommand(sql, cnn);
             adapter.UpdateCommand.ExecuteNonQuery();
@@ -32,7 +38,14 @@ namespace TestDBSolution
             cnn.Close();
 
         }
-        public static int GetBalance(string Account, int AccountNumber, string AccountType)
+        /// <summary>
+        /// Finds the balance of a desired account in the database
+        /// </summary>
+        /// <param name="account">checking or savings account</param>
+        /// <param name="accountNumber">account number</param>
+        /// <param name="accountType">checking or savings number</param>
+        /// <returns></returns>
+        public static int GetBalance(string account, int accountNumber, string accountType)
         {
             string connectionString;
             SqlConnection cnn;
@@ -41,24 +54,28 @@ namespace TestDBSolution
             cnn.Open();
             SqlCommand command;
             string sql = String.Empty;
-            sql = "Select* From " + Account + " Where "+AccountType+"=" + AccountNumber + "";
+            sql = "Select* From " + account + " Where "+accountType+"=" + accountNumber + "";
             SqlDataReader dataReader;
             command = new SqlCommand(sql, cnn);
             dataReader = command.ExecuteReader();
-            int AccountBalance;
-            string AccountBalanceString = string.Empty;
+            int accountBalance;
+            string accountBalanceString = string.Empty;
             while (dataReader.Read())
             {
-                AccountBalanceString = dataReader.GetValue(1).ToString();
+                accountBalanceString = dataReader.GetValue(1).ToString();
             }
-            AccountBalance = int.Parse(AccountBalanceString);
+            accountBalance = int.Parse(accountBalanceString);
             dataReader.Close();
             command.Dispose();
             cnn.Close();
-            return AccountBalance;
+            return accountBalance;
         }
-        //Select from database function 
-        public static int GetAccountChecking(string Account, int CustomerNumber)
+        /// <summary>
+        /// Finds the checking account number given a customernumber
+        /// </summary>
+        /// <param name="customerNumber">the customer account number</param>
+        /// <returns> customer CheckingAccountNumber </returns>
+        public static int GetAccountChecking(int customerNumber)
         {
             string connectionString;
             SqlConnection cnn;
@@ -67,7 +84,7 @@ namespace TestDBSolution
             cnn.Open();
             SqlCommand command;
             string sql = String.Empty;
-            sql = "Select* From BankCustomer Where CustomerNumber=" + CustomerNumber + "";
+            sql = "Select* From BankCustomer Where CustomerNumber=" + customerNumber + "";
             SqlDataReader dataReader;
             command = new SqlCommand(sql, cnn);
             dataReader = command.ExecuteReader();
@@ -84,7 +101,12 @@ namespace TestDBSolution
             cnn.Close();
             return AccountNumber;
         }
-        public static int GetAccountSavings(string Account, int CustomerNumber)
+        /// <summary>
+        /// Finds the savings account number given a customer number 
+        /// </summary>
+        /// <param name="customerNumber">the customer account number</param>
+        /// <returns>customer SavingsAccountNumber</returns>
+        public static int GetAccountSavings(int customerNumber)
         {
             string connectionString;
             SqlConnection cnn;
@@ -93,7 +115,7 @@ namespace TestDBSolution
             cnn.Open();
             SqlCommand command;
             string sql = String.Empty;
-            sql = "Select* From BankCustomer Where CustomerNumber=" + CustomerNumber + "";
+            sql = "Select* From BankCustomer Where CustomerNumber=" + customerNumber + "";
             SqlDataReader dataReader;
             command = new SqlCommand(sql, cnn);
             dataReader = command.ExecuteReader();

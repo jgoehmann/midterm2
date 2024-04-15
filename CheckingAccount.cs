@@ -10,11 +10,19 @@ namespace midterm
 {
     public class Checking : Account
     {
-        public Checking(int CustomerNumber)
+        /// <summary>
+        /// Constructs the class by running a given customerNumber through SQLHelper
+        /// </summary>
+        /// <param name="customerNumber">customer account number</param>
+        public Checking(int customerNumber)
         {
-            this.AccountNumber = SQLHelper.GetAccountChecking("CheckingAccountNumber", CustomerNumber);
+            this.AccountNumber = SQLHelper.GetAccountChecking(customerNumber);
             this.AccountBalance = SQLHelper.GetBalance("CheckingAccount", this.AccountNumber,"CheckingAccountNumber");
         }
+        /// <summary>
+        /// functions for returning desired values
+        /// </summary>
+        /// <returns>desired value</returns>
         public int GetAccountNumber()
         {
             return AccountNumber;
@@ -23,19 +31,25 @@ namespace midterm
         {
             return AccountBalance;
         }
-        public void ChangeBalance(int value, int CustomerNumber)
+        /// <summary>
+        /// Changes AccounBalance by value and if that value would cause AccountBalance to go below zero, it subtracts the value
+        /// that remains in AccountBalance and takes the rest from the customer's savings account
+        /// </summary>
+        /// <param name="value">desired balance change</param>
+        /// <param name="customerNumber">customer account number (needed to check savings account)</param>
+        public void ChangeBalance(int value, int customerNumber)
         {
             if ((this.AccountBalance - value) > 0){
                 this.AccountBalance= this.AccountBalance - value;
-                SQLHelper.updateDB("CheckingAccount", this.AccountNumber, this.AccountBalance,"CheckingAccountNumber");
+                SQLHelper.UpdateDB("CheckingAccount", this.AccountNumber, this.AccountBalance,"CheckingAccountNumber");
             }
             else
             {
                 MessageBox.Show("Amount Exceeds what is left in checking. Taking the excess amount from savings");
                 int newvalue = value - this.AccountBalance;
                 this.AccountBalance = 0;
-                SQLHelper.updateDB("CheckingAccount", this.AccountNumber, this.AccountBalance, "CheckingAccountNumber");
-                Savings SavingsAccount1 = new Savings(CustomerNumber);
+                SQLHelper.UpdateDB("CheckingAccount", this.AccountNumber, this.AccountBalance, "CheckingAccountNumber");
+                Savings SavingsAccount1 = new Savings(customerNumber);
                 SavingsAccount1.ChangeBalance(newvalue);
             }
         }
